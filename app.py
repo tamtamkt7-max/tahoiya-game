@@ -10,8 +10,11 @@ st.set_page_config(page_title="たほいや", layout="centered", initial_sidebar
 def get_random_question():
     conn = sqlite3.connect('tahoiya.db')
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM questions ORDER BY RANDOM() LIMIT 1")
-    row = cursor.fetchone()
+    try:
+        cursor.execute("SELECT * FROM questions ORDER BY RANDOM() LIMIT 1")
+        row = cursor.fetchone()
+    except sqlite3.OperationalError:
+        row = None
     conn.close()
     return row
 
@@ -22,33 +25,22 @@ def get_global_rooms():
 
 global_rooms = get_global_rooms()
 
-# スタイリング（スマホでの視認性とファーストビューの密度を極限まで高めたUI）
+# スタイリング
 st.markdown("""
     <style>
-    /* タイトルとヘッダー */
     .main-title { font-size: 2.2rem; font-weight: 800; text-align: center; color: #FF4B4B; margin-bottom: 1rem; letter-spacing: 0.15rem; }
     .room-tag { font-size: 0.9rem; padding: 0.4rem 0.8rem; border-radius: 8px; border: 1px solid #e0e0e0; text-align: center; margin-bottom: 1rem; color: #555555; }
-    
-    /* お題表示 */
     .word-display { font-size: 1.8rem; font-weight: bold; text-align: center; padding: 1rem; border-radius: 12px; border: 2px solid #FF4B4B; margin: 0.8rem 0; }
     .timer-display { font-size: 1.3rem; font-weight: bold; text-align: center; color: #FF4B4B; margin: 0.5rem 0; }
-    
-    /* スマホ向け：横並びコンパクトサマリー */
     .summary-container { display: flex; justify-content: space-between; border: 1px solid #e0e0e0; border-radius: 10px; padding: 0.7rem; margin-bottom: 1rem; background-color: transparent; }
     .summary-item { flex: 1; text-align: center; border-right: 1px solid #e0e0e0; }
     .summary-item:last-child { border-right: none; }
     .summary-label { font-size: 0.75rem; color: #777777; margin-bottom: 0.2rem; }
     .summary-value { font-size: 1.1rem; font-weight: bold; color: #333333; }
     .summary-value-highlight { font-size: 1.1rem; font-weight: bold; color: #FF4B4B; }
-    
-    /* 選択肢カード（タイト設計） */
     .stat-box { padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.5rem; border: 1px solid #e0e0e0; font-size: 0.95rem; line-height: 1.4; }
     .stat-box-correct { padding: 0.8rem 1rem; border-radius: 10px; margin-bottom: 0.5rem; border: 2px solid #2e7d32; font-size: 0.95rem; line-height: 1.4; }
-    
-    /* グループ分け結果表示 */
     .result-group { border: 1px solid #e0e0e0; border-radius: 8px; padding: 0.6rem 0.8rem; margin-bottom: 0.5rem; font-size: 0.9rem; }
-    
-    /* 各種微調整 */
     .stTextArea textarea { padding: 0.5rem; }
     div.stButton > button { margin-top: 0.2rem; margin-bottom: 0.2rem; }
     </style>
@@ -139,7 +131,7 @@ else:
         st.session_state.role = None
         st.rerun()
 
-    # ⏰ タイマー及び自動締め切り監視（投票中のみ）
+    # ⏰ タイマー及び自動締め切り監視
     if room["status"] == "voting":
         elapsed = time.time() - room["start_time"]
         remaining = int(room["time_limit"] - elapsed)
@@ -148,12 +140,10 @@ else:
             room["status"] = "result"
             st.rerun()
 
-    # 📈 結果画面になった瞬間に1度だけ通算スコアを計算
     if room["status"] == "result" and not room["score_updated"]:
         for name in room["players"]:
             if name not in room["scores"]:
                 room["scores"][name] = {"correct": 0, "total": 0}
-            
             room["scores"][name]["total"] += 1
             if room["votes"].get(name) == room["correct"]:
                 room["scores"][name]["correct"] += 1
@@ -163,7 +153,6 @@ else:
     def render_result_view():
         st.markdown(f'<div class="word-display">結果発表：【 {room["word"]} 】</div>', unsafe_allow_html=True)
         
-        # 1. 横並び1行サマリー
         total_votes = len(room["votes"])
         correct_list = [name for name, vote in room["votes"].items() if vote == room["correct"]]
         incorrect_list = [name for name, vote in room["votes"].items() if vote != room["correct"]]
@@ -191,7 +180,6 @@ else:
         
         st.success(f"🟩 **正しい意味（正解）**\n\n{room['correct']}")
         
-        # 2. 各解答の投票率（コンパクト設計）
         st.write("---")
         st.subheader("📈 選択肢ごとの得票状況")
         for choice in room["choices"]:
@@ -213,14 +201,11 @@ else:
                 </div>
                 """, unsafe_allow_html=True)
             
-        # 3. 大人数でも縦伸びしないユーザー別の回答（完全グループ集約型）
         st.write("---")
         st.subheader("👤 プレイヤーの回答グループ")
-        
         if room["votes"]:
             correct_names = "、".join(correct_list) if correct_list else "なし"
             incorrect_names = "、".join(incorrect_list) if incorrect_list else "なし"
-            
             st.markdown(f"""
             <div class="result-group">
                 <span style="color: #2e7d32; font-weight: bold;">🟢 正解したプレイヤー ({correct_count}人):</span><br>
@@ -234,7 +219,6 @@ else:
         else:
             st.write("投票したプレイヤーはいませんでした。")
             
-        # 4. 連続プレイ時の通算成績（タイトなランキング形式）
         st.write("---")
         st.subheader("🏆 通算成績ランキング")
         if room["scores"]:
@@ -251,13 +235,20 @@ else:
 
     # ---------------- 👑 親のゲーム進行 ----------------
     if role == "親（出題者）":
-        button_label = "お題を更新"
-        if st.button(button_label, use_container_width=True):
-            q = get_random_question()
-            if q:
-                room["word"] = q[1]
-                room["correct"] = q[2]
-                room["fake_pool"] = [q[3], q[4], q[5]]
+        
+        if room["status"] == "waiting":
+            st.subheader("🎲 方法1: 登録リストから引く")
+            button_label = "お題を更新"
+            if st.button(button_label, use_container_width=True):
+                q = get_random_question()
+                if q:
+                    room["word"] = q[1]
+                    room["correct"] = q[2]
+                    room["fake_pool"] = [q[3], q[4], q[5]]
+                else:
+                    room["word"] = "サンプルの言葉"
+                    room["correct"] = "サンプル本物の意味"
+                    room["fake_pool"] = []
                 room["used_pool_count"] = 0
                 room["status"] = "playing"
                 room["votes"] = {}
@@ -267,9 +258,29 @@ else:
                 room["score_updated"] = False
                 st.rerun()
                 
-        if room["status"] == "waiting":
-            st.info("上の「お題を更新」ボタンを押してお題を引いてください。子は待機画面で待っています。")
+            st.write("---")
+            st.subheader("✍ 方法2: 自分で自由に入力する")
+            custom_word = st.text_input("お題にする言葉", placeholder="例：たほいや")
+            custom_correct = st.text_area("正しい意味（本物の解説）", placeholder="例：猪などを追うために追い手が発する声。")
+            
+            if st.button("このオリジナルお題で作成に進む", use_container_width=True, type="primary"):
+                if custom_word.strip() and custom_correct.strip():
+                    room["word"] = custom_word.strip()
+                    room["correct"] = custom_correct.strip()
+                    room["fake_pool"] = [] # 手動入力時はストックなし
+                    room["used_pool_count"] = 0
+                    room["status"] = "playing"
+                    room["votes"] = {}
+                    room["f1_text"] = ""
+                    room["f2_text"] = ""
+                    room["f3_text"] = ""
+                    room["score_updated"] = False
+                    st.rerun()
+                else:
+                    st.error("言葉と正しい意味の両方を入力してください。")
+                    
             if room["players"]:
+                st.write("---")
                 st.write("現在の参加者:", ", ".join(room["players"]))
             
         elif room["status"] == "playing":
@@ -280,21 +291,28 @@ else:
             st.subheader("嘘の選択肢を作成")
             room["time_limit"] = st.number_input("制限時間（秒）", min_value=10, max_value=300, value=60, step=10)
             
-            if st.button("嘘の選択肢をストックから1つ補給", use_container_width=True):
-                if room["used_pool_count"] < len(room["fake_pool"]):
-                    next_fake = room["fake_pool"][room["used_pool_count"]]
-                    if not room["f1_text"].strip(): room["f1_text"] = next_fake; room["used_pool_count"] += 1
-                    elif not room["f2_text"].strip(): room["f2_text"] = next_fake; room["used_pool_count"] += 1
-                    elif not room["f3_text"].strip(): room["f3_text"] = next_fake; room["used_pool_count"] += 1
-                    else: st.warning("すべての入力欄が埋まっています。")
-                    st.rerun()
-                else:
-                    st.warning("これ以上ストックされている嘘はありません。")
+            # 自動ストックがある場合のみ補給ボタンを出す
+            if room["fake_pool"]:
+                if st.button("嘘の選択肢をストックから1つ補給", use_container_width=True):
+                    if room["used_pool_count"] < len(room["fake_pool"]):
+                        next_fake = room["fake_pool"][room["used_pool_count"]]
+                        if not room["f1_text"].strip(): room["f1_text"] = next_fake; room["used_pool_count"] += 1
+                        elif not room["f2_text"].strip(): room["f2_text"] = next_fake; room["used_pool_count"] += 1
+                        elif not room["f3_text"].strip(): room["f3_text"] = next_fake; room["used_pool_count"] += 1
+                        else: st.warning("すべての入力欄が埋まっています。")
+                        st.rerun()
+                    else:
+                        st.warning("これ以上ストックされている嘘はありません。")
 
-            room["f1_text"] = st.text_area("嘘の意味 1", value=room["f1_text"])
-            room["f2_text"] = st.text_area("嘘の意味 2", value=room["f2_text"])
-            room["f3_text"] = st.text_area("嘘の意味 3", value=room["f3_text"])
+            room["f1_text"] = st.text_area("嘘の意味 1", value=room["f1_text"], placeholder="もっともらしい嘘を入力")
+            room["f2_text"] = st.text_area("嘘の意味 2", value=room["f2_text"], placeholder="もっともらしい嘘を入力")
+            room["f3_text"] = st.text_area("嘘の意味 3", value=room["f3_text"], placeholder="もっともらしい嘘を入力")
             
+            # リセットしてやり直すボタン（UX改善）
+            if st.button("お題の選択をやり直す", use_container_width=True):
+                room["status"] = "waiting"
+                st.rerun()
+                
             if st.button("この4択で出題を開始！", use_container_width=True, type="primary"):
                 if room["f1_text"].strip() and room["f2_text"].strip() and room["f3_text"].strip():
                     choices = [room["correct"], room["f1_text"], room["f2_text"], room["f3_text"]]
