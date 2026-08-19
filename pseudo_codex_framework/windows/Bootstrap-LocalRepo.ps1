@@ -12,10 +12,10 @@ $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
 function Invoke-Git {
-    param([Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
-    $output = & git @Args 2>&1
+    $gitArgs = @($args)
+    $output = & git @gitArgs 2>&1
     if ($LASTEXITCODE -ne 0) {
-        throw "git $($Args -join ' ') failed:`n$($output -join [Environment]::NewLine)"
+        throw "git $($gitArgs -join ' ') failed:`n$($output -join [Environment]::NewLine)"
     }
     return @($output)
 }
