@@ -2,10 +2,10 @@
   "version": 1,
   "repository": "tamtamkt7-max/tahoiya-game",
   "working_branch": "pseudo-codex-lab-20260820",
-  "phase": "repairing",
+  "phase": "implementing",
   "task": {
-    "id": "framework-node-ci-v1",
-    "goal": "Verify reusable state management and Node application CI orchestration without Codex or paid AI APIs.",
+    "id": "recovery-resume-v1",
+    "goal": "Verify bounded recovery, cross-session continuation, and safe stop conditions for the reusable pseudo-Codex loop.",
     "spec_path": "pseudo_codex_framework/OPERATING_RULES.md"
   },
   "safety": {
@@ -31,15 +31,15 @@
       "lint",
       "build"
     ],
-    "last_result": "fail",
-    "last_checked_sha": "e54b4eb365f333ed4ec0091182a24de3b3a5f328"
+    "last_result": "pass",
+    "last_checked_sha": "d140528aecf9859b1387f3f0974c394a49f600d2"
   },
   "repair_budget": {
     "max_attempts": 3,
-    "attempts_used": 2
+    "attempts_used": 0
   },
-  "last_known_good_sha": "8739e8bc81c7facbe1df17234edefdb7f0d8dd7f",
-  "next_action": "Explicitly include Node type definitions in tsconfig and rerun all required checks.",
+  "last_known_good_sha": "d140528aecf9859b1387f3f0974c394a49f600d2",
+  "next_action": "Add explicit recovery rules and verify an hourly bounded continuation task can resume only from repository state.",
   "blockers": [],
-  "updated_at": "2026-08-20T01:41:00+09:00"
+  "updated_at": "2026-08-20T01:44:00+09:00"
 }
