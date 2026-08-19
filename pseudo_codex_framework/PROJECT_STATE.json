@@ -4,9 +4,9 @@
   "working_branch": "pseudo-codex-lab-20260820",
   "phase": "validating",
   "task": {
-    "id": "recovery-resume-v1",
-    "goal": "Verify bounded recovery, cross-session continuation, and safe stop conditions for the reusable pseudo-Codex loop.",
-    "spec_path": "pseudo_codex_framework/OPERATING_RULES.md"
+    "id": "windows-bootstrap-v1",
+    "goal": "Verify a one-command Windows bootstrap can safely push the current local repository state to an isolated GitHub branch without leaking common secret files.",
+    "spec_path": "pseudo_codex_framework/windows/Bootstrap-LocalRepo.ps1"
   },
   "safety": {
     "allowed_paths": [
@@ -43,9 +43,10 @@
     "repository_state_only_resume": "confirmed",
     "recovered_from_sha": "bd9c00eb3df663e77a1db1162ab64e36399800ad",
     "ci_at_recovered_head": "pass",
-    "chat_history_required": false
+    "chat_history_required": false,
+    "safety_guard_implemented": true
   },
-  "next_action": "Verify the safe-stop boundary with a state-only test that proves the framework blocks rather than editing when a forbidden or exhausted-repair condition is present.",
+  "next_action": "Verify pseudo-codex/windows-bootstrap status on this push; if it fails, fetch the exact Windows job log and repair within budget.",
   "blockers": [],
-  "updated_at": "2026-08-20T01:43:00+09:00"
+  "updated_at": "2026-08-20T01:47:00+09:00"
 }
