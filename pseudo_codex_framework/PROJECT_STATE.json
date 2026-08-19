@@ -2,7 +2,7 @@
   "version": 1,
   "repository": "tamtamkt7-max/tahoiya-game",
   "working_branch": "pseudo-codex-lab-20260820",
-  "phase": "validating",
+  "phase": "complete",
   "task": {
     "id": "final-ops-gate-v1",
     "goal": "Validate the final reusable pseudo-Codex operating package, efficiency controls, safety boundaries, and user runbook before framework completion.",
@@ -31,15 +31,17 @@
   },
   "validation": {
     "required_checks": ["state", "test", "typecheck", "lint", "build"],
-    "last_result": "not_run",
-    "last_checked_sha": "4496d66e0aeda3fd2c5d12beea17b2f51d777fe2"
+    "last_result": "pass",
+    "last_checked_sha": "99217e9cae94d7a53c9f175381502ca97fb68d58"
   },
   "repair_budget": {
     "max_attempts": 3,
     "attempts_used": 0
   },
-  "last_known_good_sha": "4496d66e0aeda3fd2c5d12beea17b2f51d777fe2",
+  "last_known_good_sha": "99217e9cae94d7a53c9f175381502ca97fb68d58",
   "evidence": {
+    "final_framework_ci_pass": true,
+    "final_completion_review_pass": true,
     "python_repair_loop_verified": true,
     "node_ci_verified": true,
     "reusable_node_template_verified": true,
@@ -53,10 +55,15 @@
     "windows_secret_path_guard_verified": true,
     "windows_secret_content_guard_verified": true,
     "batch_commit_verified": true,
+    "superseded_ci_cancellation_configured": true,
+    "additional_paid_ai_required": false,
+    "codex_execution_engine_required": false,
+    "dangerous_automation_required": false,
     "new_repo_creation_requires_one_user_action": true,
-    "affipilot_github_copy_is_stale": true
+    "affipilot_github_copy_is_stale": true,
+    "autonomous_development_lead_prompt_created": true
   },
-  "next_action": "Validate this final framework commit with the lab CI profiles, then perform a completion-condition review and record completion if all required evidence is present.",
+  "next_action": "Framework complete. Use USER_RUNBOOK.md and AUTONOMOUS_DEVELOPMENT_LEAD.md for real application development. For AffiPilot, bootstrap the newer Windows local repository to an isolated GitHub branch before development.",
   "blockers": [],
-  "updated_at": "2026-08-20T02:18:00+09:00"
+  "updated_at": "2026-08-20T02:22:00+09:00"
 }
