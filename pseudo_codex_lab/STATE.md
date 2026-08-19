@@ -8,7 +8,8 @@ pull_request_creation: forbidden
 merge: forbidden
 release_or_deploy: forbidden
 paid_services: forbidden
-scheduled_probe: pending
+scheduled_probe: confirmed
+scheduled_probe_last_run: 2026-08-20T01:21:16+09:00 confirmed
 
 verified:
 - ChatGPT can create a GitHub branch.
@@ -18,6 +19,7 @@ verified:
 - ChatGPT can follow that status to the workflow run, jobs, and decoded logs.
 - A deliberate failure was detected from CI, diagnosed, repaired by ChatGPT, rerun automatically, and returned to PASS without user copy/paste.
 - Repository state can be used as the handoff source instead of chat-only memory.
+- ChatGPT Scheduled Tasks can resume from repository state across chat/session boundaries and write back to the connected GitHub branch.
 
 preferred_core_loop:
 ChatGPT edits isolated branch -> GitHub Actions validates -> commit status reports PASS/FAIL -> ChatGPT follows failing run/logs -> ChatGPT repairs -> Actions validates again -> repeat until PASS or safety/decision boundary.
@@ -28,5 +30,4 @@ limitations:
 - Do not auto-merge, deploy, release, delete, or modify the default branch.
 
 next:
-- Verify whether ChatGPT Scheduled Tasks can resume from this repository state across chat/session boundaries using the connected GitHub app.
-- After that, design the reusable project-state schema and a realistic Node/TypeScript CI profile without changing an existing production app.
+- Design the reusable project-state schema and a realistic Node/TypeScript CI profile without changing an existing production app.
