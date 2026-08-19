@@ -8,8 +8,11 @@ $secretWork = Join-Path $root 'secret-work'
 $scriptPath = Join-Path $PSScriptRoot 'Bootstrap-LocalRepo.ps1'
 
 function GitAt {
-    param([string]$Path, [Parameter(ValueFromRemainingArguments = $true)][string[]]$Args)
-    $out = & git -C $Path @Args 2>&1
+    param(
+        [Parameter(Position = 0, Mandatory = $true)][string]$Path,
+        [Parameter(Position = 1, ValueFromRemainingArguments = $true)][string[]]$GitArgs
+    )
+    $out = & git -C $Path @GitArgs 2>&1
     if ($LASTEXITCODE -ne 0) { throw "git failed: $($out -join [Environment]::NewLine)" }
     return @($out)
 }
