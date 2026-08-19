@@ -30,6 +30,7 @@ jobs:
           set +e
           output=$({
             node pseudo_codex_framework/scripts/validate-state.mjs pseudo_codex_framework/PROJECT_STATE.json &&
+            node --test pseudo_codex_framework/test/*.test.mjs &&
             npm install --prefix pseudo_codex_framework/fixtures/node-typescript --no-audit --no-fund --ignore-scripts &&
             node pseudo_codex_framework/scripts/run-node-ci.mjs \
               pseudo_codex_framework/fixtures/node-typescript \
@@ -39,10 +40,10 @@ jobs:
 
           if [ "$code" -eq 0 ]; then
             state=success
-            description="state + test + typecheck + lint + build passed"
+            description="state + safety + test + typecheck + lint + build passed"
           else
             state=failure
-            description=$(printf '%s\n' "$output" | grep -E 'CHECK_FAILED|MISSING_REQUIRED_SCRIPT|Error:|error TS|LINT_FAIL|not ok|FAIL' | tail -n 1 | cut -c1-120)
+            description=$(printf '%s\n' "$output" | grep -E 'CHECK_FAILED|MISSING_REQUIRED_SCRIPT|unknown state key|Error:|error TS|LINT_FAIL|not ok|FAIL' | tail -n 1 | cut -c1-120)
             if [ -z "$description" ]; then description="pseudo-Codex Node profile failed"; fi
           fi
 
