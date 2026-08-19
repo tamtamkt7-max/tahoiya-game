@@ -6,11 +6,11 @@ Provide a reusable development loop where ChatGPT can inspect and edit an isolat
 
 ## Authoritative state
 
-`pseudo_codex_framework/PROJECT_STATE.json` is the single authoritative handoff state. Do not duplicate live state into multiple documents.
+`pseudo_codex_framework/PROJECT_STATE.json` is the single authoritative handoff state. In installed projects the equivalent file is `.pseudo-codex/STATE.json`. Do not duplicate live state into multiple documents.
 
 ## Core loop
 
-1. Read `PROJECT_STATE.json` and the project specification.
+1. Read the authoritative state and the project specification.
 2. Confirm repository, working branch, allowed paths, forbidden actions, required checks, and repair budget.
 3. Inspect only the code needed for the current task.
 4. Edit only the isolated working branch.
@@ -35,13 +35,17 @@ For Node projects, run scripts only when they exist in `package.json`, in this p
 3. `lint`
 4. `build`
 
-A missing required script is a failure when it is listed in `PROJECT_STATE.json.validation.required_checks`.
+A missing required script is a failure when it is listed in the authoritative state's `validation.required_checks`.
 
 CI must publish one compact commit status with a target URL pointing to the exact workflow run. Full logs stay in GitHub Actions and are fetched only when needed.
 
 ## Repair limits
 
 Default maximum automatic repair attempts: 3 per task. A repair attempt means a code/configuration change made after a failed validation. Do not loop indefinitely.
+
+## State-only updates
+
+State updates create commits too. `validation.last_checked_sha` therefore points to the implementation-changing commit that was validated, not recursively to every later state-only commit. A later state-only commit remains valid when its CI passes and comparison confirms that no runtime code, tests, dependencies, build configuration, or CI behavior changed. This prevents an endless state-update loop.
 
 ## Completion
 
