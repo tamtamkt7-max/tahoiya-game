@@ -37,6 +37,42 @@ function Assert-NoSensitivePaths {
     }
 }
 
+function Assert-NoSensitiveContent {
+    $staged = @(Invoke-Git diff --cached --name-only --diff-filter=ACMR)
+    $patterns = @(
+        @{ Name = 'private_key'; Regex = '-----BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY-----' },
+        @{ Name = 'openai_key'; Regex = '\bsk-[A-Za-z0-9_-]{20,}\b' },
+        @{ Name = 'github_token'; Regex = '\bgithub_pat_[A-Za-z0-9_]{20,}\b' },
+        @{ Name = 'github_token'; Regex = '\bgh[pousr]_[A-Za-z0-9]{20,}\b' },
+        @{ Name = 'google_api_key'; Regex = '\bAIza[0-9A-Za-z_-]{20,}\b' },
+        @{ Name = 'aws_access_key'; Regex = '\bAKIA[0-9A-Z]{16}\b' },
+        @{ Name = 'slack_token'; Regex = '\bxox[baprs]-[A-Za-z0-9-]{10,}\b' }
+    )
+    $blocked = @()
+    $binaryExtensions = '\.(png|jpe?g|gif|webp|ico|pdf|zip|gz|7z|db|sqlite|woff2?|ttf|otf|mp4|mov|mp3|wav)$'
+
+    foreach ($raw in $staged) {
+        $p = ($raw -replace '\\', '/').Trim()
+        if (-not $p -or $p -match $binaryExtensions) { continue }
+
+        $content = & git show ":$p" 2>$null
+        $showExit = $LASTEXITCODE
+        if ($showExit -ne 0) { continue }
+        $text = ($content -join "`n")
+
+        foreach ($pattern in $patterns) {
+            if ($text -match $pattern.Regex) {
+                $blocked += "$p [$($pattern.Name)]"
+                break
+            }
+        }
+    }
+
+    if ($blocked.Count -gt 0) {
+        throw "Sensitive-looking content detected. Nothing was pushed:`n$($blocked -join [Environment]::NewLine)"
+    }
+}
+
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     throw "Git is not installed or not available in PATH."
 }
@@ -68,6 +104,7 @@ try {
     Invoke-Git switch -c $branch | Out-Null
     Invoke-Git add -A | Out-Null
     Assert-NoSensitivePaths
+    Assert-NoSensitiveContent
 
     $staged = @(Invoke-Git diff --cached --name-only)
     if ($staged.Count -gt 0 -and -not ([string]::IsNullOrWhiteSpace(($staged -join '')))) {
