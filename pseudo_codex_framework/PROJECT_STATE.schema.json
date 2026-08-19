@@ -31,6 +31,17 @@
       },
       "additionalProperties": false
     },
+    "runtime": {
+      "type": "object",
+      "required": ["kind", "project_root"],
+      "properties": {
+        "kind": { "enum": ["node", "python", "other"] },
+        "project_root": { "type": "string", "minLength": 1 },
+        "package_manager": { "enum": ["npm", "pnpm", "yarn", null] },
+        "node_version": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
     "safety": {
       "type": "object",
       "required": ["allowed_paths", "forbidden_actions"],
