@@ -2,7 +2,7 @@
   "version": 1,
   "repository": "tamtamkt7-max/tahoiya-game",
   "working_branch": "pseudo-codex-lab-20260820",
-  "phase": "implementing",
+  "phase": "validating",
   "task": {
     "id": "recovery-resume-v1",
     "goal": "Verify bounded recovery, cross-session continuation, and safe stop conditions for the reusable pseudo-Codex loop.",
@@ -32,14 +32,20 @@
       "build"
     ],
     "last_result": "pass",
-    "last_checked_sha": "d140528aecf9859b1387f3f0974c394a49f600d2"
+    "last_checked_sha": "bd9c00eb3df663e77a1db1162ab64e36399800ad"
   },
   "repair_budget": {
     "max_attempts": 3,
     "attempts_used": 0
   },
-  "last_known_good_sha": "d140528aecf9859b1387f3f0974c394a49f600d2",
-  "next_action": "Add explicit recovery rules and verify an hourly bounded continuation task can resume only from repository state.",
+  "last_known_good_sha": "bd9c00eb3df663e77a1db1162ab64e36399800ad",
+  "recovery_evidence": {
+    "repository_state_only_resume": "confirmed",
+    "recovered_from_sha": "bd9c00eb3df663e77a1db1162ab64e36399800ad",
+    "ci_at_recovered_head": "pass",
+    "chat_history_required": false
+  },
+  "next_action": "Verify the safe-stop boundary with a state-only test that proves the framework blocks rather than editing when a forbidden or exhausted-repair condition is present.",
   "blockers": [],
-  "updated_at": "2026-08-20T01:44:00+09:00"
+  "updated_at": "2026-08-20T01:41:30+09:00"
 }
