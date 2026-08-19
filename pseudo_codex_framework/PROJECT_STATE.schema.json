@@ -1,0 +1,68 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pseudo Codex Project State",
+  "type": "object",
+  "required": [
+    "version",
+    "repository",
+    "working_branch",
+    "phase",
+    "task",
+    "safety",
+    "validation",
+    "repair_budget",
+    "next_action",
+    "updated_at"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "repository": { "type": "string", "minLength": 3 },
+    "working_branch": { "type": "string", "minLength": 1 },
+    "phase": {
+      "enum": ["planning", "implementing", "validating", "repairing", "review", "blocked", "complete"]
+    },
+    "task": {
+      "type": "object",
+      "required": ["id", "goal"],
+      "properties": {
+        "id": { "type": "string", "minLength": 1 },
+        "goal": { "type": "string", "minLength": 1 },
+        "spec_path": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "safety": {
+      "type": "object",
+      "required": ["allowed_paths", "forbidden_actions"],
+      "properties": {
+        "allowed_paths": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "forbidden_actions": { "type": "array", "items": { "type": "string" } }
+      },
+      "additionalProperties": false
+    },
+    "validation": {
+      "type": "object",
+      "required": ["required_checks", "last_result"],
+      "properties": {
+        "required_checks": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "last_result": { "enum": ["not_run", "pass", "fail"] },
+        "last_checked_sha": { "type": ["string", "null"] }
+      },
+      "additionalProperties": false
+    },
+    "repair_budget": {
+      "type": "object",
+      "required": ["max_attempts", "attempts_used"],
+      "properties": {
+        "max_attempts": { "type": "integer", "minimum": 0, "maximum": 10 },
+        "attempts_used": { "type": "integer", "minimum": 0, "maximum": 10 }
+      },
+      "additionalProperties": false
+    },
+    "last_known_good_sha": { "type": ["string", "null"] },
+    "next_action": { "type": "string", "minLength": 1 },
+    "blockers": { "type": "array", "items": { "type": "string" } },
+    "updated_at": { "type": "string", "minLength": 10 }
+  },
+  "additionalProperties": false
+}
