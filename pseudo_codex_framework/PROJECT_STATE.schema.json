@@ -60,6 +60,12 @@
       "additionalProperties": false
     },
     "last_known_good_sha": { "type": ["string", "null"] },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": {
+        "type": ["string", "boolean", "number", "null"]
+      }
+    },
     "next_action": { "type": "string", "minLength": 1 },
     "blockers": { "type": "array", "items": { "type": "string" } },
     "updated_at": { "type": "string", "minLength": 10 }
