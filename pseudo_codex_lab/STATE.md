@@ -16,6 +16,11 @@ verified:
 - GitHub Actions can run tests on a push.
 - Actions can write a compact test report back to the isolated branch.
 - ChatGPT can read a failed report, diagnose the defect, patch the code, and obtain a passing rerun without user copy/paste.
+- Repository state can be used as the handoff source instead of chat-only memory.
+
+limitations:
+- Direct branch-ref movement for an atomic multi-file commit was blocked by the safety layer. Use normal file update operations for now.
+- Scheduled Tasks cannot rely on project-uploaded files, so cross-session state must live in GitHub or another connected app.
 
 next:
 - Verify whether ChatGPT Scheduled Tasks can resume from repository state across chat/session boundaries using the connected GitHub app.
