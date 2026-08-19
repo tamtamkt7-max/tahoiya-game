@@ -1,0 +1,98 @@
+name: Pseudo Codex CI
+
+on:
+  push:
+    branches:
+      - 'pseudo-codex/**'
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Read project configuration
+        id: config
+        shell: bash
+        run: |
+          set -euo pipefail
+          state='.pseudo-codex/STATE.json'
+          test -f "$state"
+          root=$(jq -r '.runtime.project_root // "."' "$state")
+          node_version=$(jq -r '.runtime.node_version // "24"' "$state")
+          lockfile="$root/package-lock.json"
+          echo "project_root=$root" >> "$GITHUB_OUTPUT"
+          echo "node_version=$node_version" >> "$GITHUB_OUTPUT"
+          if [ -f "$lockfile" ]; then
+            echo "has_lock=true" >> "$GITHUB_OUTPUT"
+            echo "lockfile=$lockfile" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_lock=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set up Node with npm cache
+        if: steps.config.outputs.has_lock == 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ steps.config.outputs.node_version }}
+          cache: npm
+          cache-dependency-path: ${{ steps.config.outputs.lockfile }}
+
+      - name: Set up Node without cache
+        if: steps.config.outputs.has_lock != 'true'
+        uses: actions/setup-node@v6
+        with:
+          node-version: ${{ steps.config.outputs.node_version }}
+
+      - name: Validate project
+        id: validate
+        shell: bash
+        continue-on-error: true
+        run: |
+          set +e
+          output=$(node .pseudo-codex/run-ci.mjs 2>&1)
+          code=$?
+          printf '%s\n' "$output"
+          summary=$(printf '%s\n' "$output" | grep -E 'SAFETY_STOP|STATE_INVALID|PROJECT_INVALID|UNSUPPORTED_PACKAGE_MANAGER|MISSING_REQUIRED_SCRIPT|CHECK_FAILED|error TS|LINT_FAIL|not ok|FAIL|Error:' | tail -n 1 | cut -c1-120)
+          if [ -z "$summary" ]; then
+            if [ "$code" -eq 0 ]; then summary='required checks passed'; else summary='pseudo-Codex CI failed'; fi
+          fi
+          echo "code=$code" >> "$GITHUB_OUTPUT"
+          echo "summary=$summary" >> "$GITHUB_OUTPUT"
+
+      - name: Publish compact status
+        if: always()
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RESULT_CODE: ${{ steps.validate.outputs.code }}
+          RESULT_SUMMARY: ${{ steps.validate.outputs.summary }}
+        run: |
+          set -euo pipefail
+          if [ "${RESULT_CODE:-1}" = '0' ]; then state=success; else state=failure; fi
+          description="${RESULT_SUMMARY:-pseudo-Codex CI did not complete}"
+          payload=$(jq -n \
+            --arg state "$state" \
+            --arg target_url "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}" \
+            --arg description "$description" \
+            '{state:$state,target_url:$target_url,description:$description,context:"pseudo-codex/app-ci"}')
+          curl --fail-with-body -sS -L \
+            -X POST \
+            -H 'Accept: application/vnd.github+json' \
+            -H "Authorization: Bearer ${GH_TOKEN}" \
+            -H 'X-GitHub-Api-Version: 2022-11-28' \
+            "${GITHUB_API_URL}/repos/${GITHUB_REPOSITORY}/statuses/${GITHUB_SHA}" \
+            -d "$payload"
+
+      - name: Fail workflow when validation failed
+        if: steps.validate.outputs.code != '0'
+        shell: bash
+        run: exit 1
