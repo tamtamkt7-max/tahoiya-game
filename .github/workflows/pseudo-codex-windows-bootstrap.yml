@@ -1,0 +1,62 @@
+name: Pseudo Codex Windows Bootstrap
+
+on:
+  push:
+    branches:
+      - pseudo-codex-lab-20260820
+
+permissions:
+  contents: read
+  statuses: write
+
+jobs:
+  windows-bootstrap-test:
+    runs-on: windows-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Test safe local-to-GitHub bootstrap
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $failed = $false
+          $output = ''
+          try {
+            $output = (& ./pseudo_codex_framework/windows/Test-Bootstrap.ps1 2>&1 | Out-String)
+            if ($LASTEXITCODE -ne 0) { throw "bootstrap self-test returned exit $LASTEXITCODE" }
+            if ($output -notmatch 'WINDOWS_BOOTSTRAP_TEST_OK') { throw 'success marker missing' }
+          }
+          catch {
+            $failed = $true
+            $output = $output + "`n" + ($_ | Out-String)
+          }
+
+          if ($failed) {
+            $state = 'failure'
+            $description = (($output -split "`r?`n" | Where-Object { $_ -match 'Sensitive|failed|Error|Exception' } | Select-Object -Last 1) -join ' ')
+            if ([string]::IsNullOrWhiteSpace($description)) { $description = 'Windows bootstrap validation failed' }
+          }
+          else {
+            $state = 'success'
+            $description = 'Windows bootstrap + secret guard passed'
+          }
+          if ($description.Length -gt 120) { $description = $description.Substring(0,120) }
+
+          $payload = @{
+            state = $state
+            target_url = "$env:GITHUB_SERVER_URL/$env:GITHUB_REPOSITORY/actions/runs/$env:GITHUB_RUN_ID"
+            description = $description
+            context = 'pseudo-codex/windows-bootstrap'
+          } | ConvertTo-Json -Compress
+
+          $headers = @{
+            Accept = 'application/vnd.github+json'
+            Authorization = "Bearer $env:GH_TOKEN"
+            'X-GitHub-Api-Version' = '2022-11-28'
+          }
+          Invoke-RestMethod -Method Post -Uri "$env:GITHUB_API_URL/repos/$env:GITHUB_REPOSITORY/statuses/$env:GITHUB_SHA" -Headers $headers -ContentType 'application/json' -Body $payload | Out-Null
+          Write-Host $output
+          if ($failed) { exit 1 }
