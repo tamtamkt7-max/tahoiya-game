@@ -20,6 +20,12 @@ Provide a reusable development loop where ChatGPT can inspect and edit an isolat
 8. Stop if the repair budget is exhausted or a forbidden/high-risk action is required.
 9. When every required check passes, review the diff against the specification before declaring completion.
 
+## Batch changes
+
+Treat one logical feature or repair as one commit whenever possible. For multi-file changes, prefer Git blob/tree/commit creation followed by a non-forced branch ref update. This keeps related edits atomic and triggers CI once instead of once per file.
+
+Before moving the branch ref, re-check the current branch head. Never force-update over an unexpected concurrent change. Sequential file writes are a fallback, not the default.
+
 ## Safety boundaries
 
 Never autonomously perform deployment, release, default-branch merge, secret retrieval, paid AI API use, destructive external actions, or irreversible data changes.

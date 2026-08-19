@@ -2,10 +2,10 @@
   "version": 1,
   "repository": "tamtamkt7-max/tahoiya-game",
   "working_branch": "pseudo-codex-lab-20260820",
-  "phase": "implementing",
+  "phase": "validating",
   "task": {
-    "id": "reusable-node-template-v1",
-    "goal": "Produce and validate the minimal reusable pseudo-Codex package that can be installed into a real Node/TypeScript application after its current code is available on an isolated GitHub branch.",
+    "id": "final-ops-gate-v1",
+    "goal": "Validate the final reusable pseudo-Codex operating package, efficiency controls, safety boundaries, and user runbook before framework completion.",
     "spec_path": "pseudo_codex_framework/OPERATING_RULES.md"
   },
   "runtime": {
@@ -30,32 +30,33 @@
     ]
   },
   "validation": {
-    "required_checks": [
-      "state",
-      "test",
-      "typecheck",
-      "lint",
-      "build"
-    ],
-    "last_result": "pass",
-    "last_checked_sha": "5c8bfdc0f78350a06f228b30528ddcc1f46b5e70"
+    "required_checks": ["state", "test", "typecheck", "lint", "build"],
+    "last_result": "not_run",
+    "last_checked_sha": "4496d66e0aeda3fd2c5d12beea17b2f51d777fe2"
   },
   "repair_budget": {
     "max_attempts": 3,
     "attempts_used": 0
   },
-  "last_known_good_sha": "5c8bfdc0f78350a06f228b30528ddcc1f46b5e70",
+  "last_known_good_sha": "4496d66e0aeda3fd2c5d12beea17b2f51d777fe2",
   "evidence": {
+    "python_repair_loop_verified": true,
+    "node_ci_verified": true,
+    "reusable_node_template_verified": true,
+    "existing_app_flow_verified": true,
+    "new_app_flow_verified": true,
     "repository_state_only_resume": "confirmed",
     "chat_history_required": false,
+    "scheduled_resume_verified": true,
     "safety_guard_verified": true,
-    "node_ci_verified": true,
     "windows_bootstrap_verified": true,
-    "windows_secret_guard_verified": true,
-    "windows_bootstrap_repair_attempts": 1,
-    "python_repair_loop_verified": true
+    "windows_secret_path_guard_verified": true,
+    "windows_secret_content_guard_verified": true,
+    "batch_commit_verified": true,
+    "new_repo_creation_requires_one_user_action": true,
+    "affipilot_github_copy_is_stale": true
   },
-  "next_action": "Finish the reusable Node template with a project-local state file and generic GitHub Actions workflow, then validate the template against the TypeScript fixture.",
+  "next_action": "Validate this final framework commit with the lab CI profiles, then perform a completion-condition review and record completion if all required evidence is present.",
   "blockers": [],
-  "updated_at": "2026-08-20T01:53:00+09:00"
+  "updated_at": "2026-08-20T02:18:00+09:00"
 }

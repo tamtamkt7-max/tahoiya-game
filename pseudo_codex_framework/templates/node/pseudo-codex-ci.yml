@@ -5,6 +5,10 @@ on:
     branches:
       - 'pseudo-codex/**'
 
+concurrency:
+  group: pseudo-codex-${{ github.repository }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
   statuses: write
