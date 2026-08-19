@@ -4,23 +4,44 @@ on:
   push:
     branches:
       - pseudo-codex-lab-20260820
-  pull_request:
-    branches:
-      - main
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   test:
+    if: github.actor != 'github-actions[bot]'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: pseudo-codex-lab-20260820
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Run pseudo-Codex lab test
-        run: python -m pytest pseudo_codex_lab/test_calculator.py -q
+      - name: Run test and record result
+        shell: bash
+        run: |
+          set +e
+          python -m unittest pseudo_codex_lab.test_calculator -v > pseudo_codex_lab/ci-output.txt 2>&1
+          code=$?
+          if [ "$code" -eq 0 ]; then status=pass; else status=fail; fi
+          {
+            echo "status=$status"
+            echo "tested_commit=${GITHUB_SHA}"
+            echo "exit_code=$code"
+            echo "--- output ---"
+            tail -n 40 pseudo_codex_lab/ci-output.txt
+          } > pseudo_codex_lab/ci-result.txt
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pseudo_codex_lab/ci-result.txt
+          if ! git diff --cached --quiet; then
+            git commit -m "lab: record CI result [skip ci]"
+            git push origin HEAD:pseudo-codex-lab-20260820
+          fi
+          exit "$code"
