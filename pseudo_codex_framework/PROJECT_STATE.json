@@ -2,7 +2,7 @@
   "version": 1,
   "repository": "tamtamkt7-max/tahoiya-game",
   "working_branch": "pseudo-codex-lab-20260820",
-  "phase": "validating",
+  "phase": "repairing",
   "task": {
     "id": "windows-bootstrap-v1",
     "goal": "Verify a one-command Windows bootstrap can safely push the current local repository state to an isolated GitHub branch without leaking common secret files.",
@@ -31,12 +31,12 @@
       "lint",
       "build"
     ],
-    "last_result": "pass",
-    "last_checked_sha": "bd9c00eb3df663e77a1db1162ab64e36399800ad"
+    "last_result": "fail",
+    "last_checked_sha": "22670650e7edf7cd0cb8aba37c6d49a058c5591b"
   },
   "repair_budget": {
     "max_attempts": 3,
-    "attempts_used": 0
+    "attempts_used": 1
   },
   "last_known_good_sha": "bd9c00eb3df663e77a1db1162ab64e36399800ad",
   "evidence": {
@@ -44,9 +44,10 @@
     "recovered_from_sha": "bd9c00eb3df663e77a1db1162ab64e36399800ad",
     "ci_at_recovered_head": "pass",
     "chat_history_required": false,
-    "safety_guard_implemented": true
+    "safety_guard_implemented": true,
+    "windows_bootstrap_failure": "PowerShell argument binding required the Args parameter unexpectedly"
   },
-  "next_action": "Verify pseudo-codex/windows-bootstrap status on this push; if it fails, fetch the exact Windows job log and repair within budget.",
+  "next_action": "Repair the Git helper argument binding in Bootstrap-LocalRepo.ps1 and its self-test, then rerun Windows validation.",
   "blockers": [],
-  "updated_at": "2026-08-20T01:47:00+09:00"
+  "updated_at": "2026-08-20T01:49:00+09:00"
 }
