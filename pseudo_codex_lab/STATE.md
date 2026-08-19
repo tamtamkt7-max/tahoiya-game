@@ -14,14 +14,19 @@ verified:
 - ChatGPT can create a GitHub branch.
 - ChatGPT can create and update files on that branch.
 - GitHub Actions can run tests on a push.
-- Actions can write a compact test report back to the isolated branch.
-- ChatGPT can read a failed report, diagnose the defect, patch the code, and obtain a passing rerun without user copy/paste.
+- GitHub Actions can publish a compact PASS/FAIL commit status with a link to the exact workflow run.
+- ChatGPT can follow that status to the workflow run, jobs, and decoded logs.
+- A deliberate failure was detected from CI, diagnosed, repaired by ChatGPT, rerun automatically, and returned to PASS without user copy/paste.
 - Repository state can be used as the handoff source instead of chat-only memory.
 
+preferred_core_loop:
+ChatGPT edits isolated branch -> GitHub Actions validates -> commit status reports PASS/FAIL -> ChatGPT follows failing run/logs -> ChatGPT repairs -> Actions validates again -> repeat until PASS or safety/decision boundary.
+
 limitations:
-- Direct branch-ref movement for an atomic multi-file commit was blocked by the safety layer. Use normal file update operations for now.
+- Direct branch-ref movement for an atomic multi-file commit was blocked by the safety layer. Use normal file create/update operations for now.
 - Scheduled Tasks cannot rely on project-uploaded files, so cross-session state must live in GitHub or another connected app.
+- Do not auto-merge, deploy, release, delete, or modify the default branch.
 
 next:
-- Verify whether ChatGPT Scheduled Tasks can resume from repository state across chat/session boundaries using the connected GitHub app.
-- Do not expand beyond this isolated lab scope until that probe is confirmed.
+- Verify whether ChatGPT Scheduled Tasks can resume from this repository state across chat/session boundaries using the connected GitHub app.
+- After that, design the reusable project-state schema and a realistic Node/TypeScript CI profile without changing an existing production app.
