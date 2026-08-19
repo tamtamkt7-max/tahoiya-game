@@ -15,6 +15,14 @@ Always resume from `PROJECT_STATE.json`, then verify the branch head and CI stat
 7. If CI failed, follow the exact workflow run and job logs before editing.
 8. If CI passed, continue with `next_action`.
 
+## State-only commits
+
+`validation.last_checked_sha` records the implementation commit whose application behavior was validated. Updating the authoritative state itself creates a newer commit, so it must not be rewritten merely to point at its own state-only commit.
+
+When the current head is newer than `last_checked_sha`, compare the commits. If every intervening change is limited to the authoritative state or other explicitly non-runtime pseudo-Codex metadata, and CI at the current head passes, treat the implementation validation as current. If runtime code, tests, dependencies, build configuration, or workflow behavior changed, require fresh validation and update `last_checked_sha` to that implementation-changing commit.
+
+This rule prevents an endless state-update -> new SHA -> state-update loop.
+
 ## Safe stop conditions
 
 Set phase to `blocked` and stop autonomous edits when any of these is true:
