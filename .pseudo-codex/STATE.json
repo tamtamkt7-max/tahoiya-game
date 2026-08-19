@@ -2,7 +2,7 @@
   "version": 1,
   "repository": "tamtamkt7-max/tahoiya-game",
   "working_branch": "pseudo-codex/new-app-v1",
-  "phase": "implementing",
+  "phase": "complete",
   "task": {
     "id": "new-app-v1",
     "goal": "Create the new Node application defined in .pseudo-codex/SPEC.md and complete it through CI and final specification review.",
@@ -31,13 +31,25 @@
   },
   "validation": {
     "required_checks": ["test", "typecheck", "lint", "build"],
-    "last_result": "not_run",
-    "last_checked_sha": null
+    "last_result": "pass",
+    "last_checked_sha": "5ea7c14a94137db15efaa0b133a4c77c90a08b71"
   },
   "repair_budget": { "max_attempts": 3, "attempts_used": 0 },
-  "last_known_good_sha": null,
-  "evidence": {},
-  "next_action": "Create the application from the specification, then let CI validate it.",
+  "last_known_good_sha": "5ea7c14a94137db15efaa0b133a4c77c90a08b71",
+  "evidence": {
+    "created_from_spec": true,
+    "test_pass": true,
+    "typecheck_pass": true,
+    "lint_pass": true,
+    "build_pass": true,
+    "spec_review_pass": true,
+    "named_greeting": "Hello, Kazuya!",
+    "trim_behavior_verified": true,
+    "guest_fallback_verified": true,
+    "forbidden_path_changes": false,
+    "ci_run_id": 32279018533
+  },
+  "next_action": "None. New-app flow is complete and retained as framework evidence.",
   "blockers": [],
-  "updated_at": "2026-08-20T02:08:00+09:00"
+  "updated_at": "2026-08-20T02:12:00+09:00"
 }
