@@ -1,0 +1,17 @@
+{
+  "name": "pseudo-codex-node-typescript-fixture",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.12"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "node scripts/lint.mjs",
+    "build": "tsc -p tsconfig.build.json"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}
