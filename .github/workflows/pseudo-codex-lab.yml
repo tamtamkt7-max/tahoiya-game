@@ -1,0 +1,26 @@
+name: Pseudo Codex Lab
+
+on:
+  push:
+    branches:
+      - pseudo-codex-lab-20260820
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run pseudo-Codex lab test
+        run: python -m pytest pseudo_codex_lab/test_calculator.py -q
