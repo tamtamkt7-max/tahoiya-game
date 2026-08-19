@@ -34,16 +34,18 @@ jobs:
             npm install --prefix pseudo_codex_framework/fixtures/node-typescript --no-audit --no-fund --ignore-scripts &&
             node pseudo_codex_framework/scripts/run-node-ci.mjs \
               pseudo_codex_framework/fixtures/node-typescript \
-              pseudo_codex_framework/PROJECT_STATE.json
+              pseudo_codex_framework/PROJECT_STATE.json &&
+            PSEUDO_CODEX_STATE=pseudo_codex_framework/templates/node/fixture-state.json \
+              node pseudo_codex_framework/templates/node/run-ci.mjs
           } 2>&1)
           code=$?
 
           if [ "$code" -eq 0 ]; then
             state=success
-            description="state + safety + test + typecheck + lint + build passed"
+            description="state + safety + core CI + reusable template passed"
           else
             state=failure
-            description=$(printf '%s\n' "$output" | grep -E 'CHECK_FAILED|MISSING_REQUIRED_SCRIPT|unknown state key|Error:|error TS|LINT_FAIL|not ok|FAIL' | tail -n 1 | cut -c1-120)
+            description=$(printf '%s\n' "$output" | grep -E 'SAFETY_STOP|STATE_INVALID|PROJECT_INVALID|UNSUPPORTED_PACKAGE_MANAGER|CHECK_FAILED|MISSING_REQUIRED_SCRIPT|unknown state key|Error:|error TS|LINT_FAIL|not ok|FAIL' | tail -n 1 | cut -c1-120)
             if [ -z "$description" ]; then description="pseudo-Codex Node profile failed"; fi
           fi
 
