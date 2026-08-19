@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "repository": "OWNER/REPOSITORY",
+  "working_branch": "pseudo-codex/TASK_ID",
+  "phase": "planning",
+  "task": {
+    "id": "TASK_ID",
+    "goal": "FINAL_SPEC_GOAL",
+    "spec_path": ".pseudo-codex/SPEC.md"
+  },
+  "runtime": {
+    "kind": "node",
+    "project_root": ".",
+    "package_manager": "npm",
+    "node_version": "24"
+  },
+  "safety": {
+    "allowed_paths": [
+      "app/",
+      "src/",
+      "lib/",
+      "components/",
+      "tests/",
+      "test/",
+      "public/",
+      "package.json",
+      "package-lock.json",
+      "tsconfig.json",
+      "eslint.config.mjs",
+      ".pseudo-codex/",
+      ".github/workflows/pseudo-codex-ci.yml"
+    ],
+    "forbidden_actions": [
+      "deploy",
+      "release",
+      "merge_to_default_branch",
+      "access_secrets",
+      "paid_ai_api",
+      "destructive_external_action"
+    ]
+  },
+  "validation": {
+    "required_checks": ["test", "typecheck", "lint", "build"],
+    "last_result": "not_run",
+    "last_checked_sha": null
+  },
+  "repair_budget": {
+    "max_attempts": 3,
+    "attempts_used": 0
+  },
+  "last_known_good_sha": null,
+  "evidence": {},
+  "next_action": "Inspect the repository against the final specification before editing.",
+  "blockers": [],
+  "updated_at": "REPLACE_WITH_TIMESTAMP"
+}
