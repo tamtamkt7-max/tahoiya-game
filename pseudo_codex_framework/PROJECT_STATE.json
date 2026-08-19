@@ -32,14 +32,14 @@
       "build"
     ],
     "last_result": "fail",
-    "last_checked_sha": "aece2f628567864edc91fd254f54884542cc955b"
+    "last_checked_sha": "e54b4eb365f333ed4ec0091182a24de3b3a5f328"
   },
   "repair_budget": {
     "max_attempts": 3,
-    "attempts_used": 1
+    "attempts_used": 2
   },
   "last_known_good_sha": "8739e8bc81c7facbe1df17234edefdb7f0d8dd7f",
-  "next_action": "Add Node type definitions required by TypeScript, then rerun all required checks.",
+  "next_action": "Explicitly include Node type definitions in tsconfig and rerun all required checks.",
   "blockers": [],
-  "updated_at": "2026-08-20T01:39:00+09:00"
+  "updated_at": "2026-08-20T01:41:00+09:00"
 }
