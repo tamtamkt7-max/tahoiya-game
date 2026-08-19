@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "repository": "tamtamkt7-max/tahoiya-game",
+  "working_branch": "pseudo-codex/real-case-v1",
+  "phase": "implementing",
+  "task": {
+    "id": "real-case-v1",
+    "goal": "Implement the multiplication feature defined in .pseudo-codex/SPEC.md and complete it through CI and final specification review.",
+    "spec_path": ".pseudo-codex/SPEC.md"
+  },
+  "runtime": {
+    "kind": "node",
+    "project_root": "pseudo_codex_framework/fixtures/node-typescript",
+    "package_manager": "npm",
+    "node_version": "24.16.0"
+  },
+  "safety": {
+    "allowed_paths": [
+      "pseudo_codex_framework/fixtures/node-typescript/",
+      ".pseudo-codex/",
+      ".github/workflows/pseudo-codex-ci.yml"
+    ],
+    "forbidden_actions": [
+      "deploy",
+      "release",
+      "merge_to_default_branch",
+      "access_secrets",
+      "paid_ai_api",
+      "destructive_external_action"
+    ]
+  },
+  "validation": {
+    "required_checks": ["test", "typecheck", "lint", "build"],
+    "last_result": "not_run",
+    "last_checked_sha": null
+  },
+  "repair_budget": {
+    "max_attempts": 3,
+    "attempts_used": 0
+  },
+  "last_known_good_sha": null,
+  "evidence": {},
+  "next_action": "Inspect the calculator source and tests, implement the specification, then let CI validate it.",
+  "blockers": [],
+  "updated_at": "2026-08-20T01:59:00+09:00"
+}
