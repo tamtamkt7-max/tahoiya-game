@@ -2,7 +2,7 @@
   "version": 1,
   "repository": "tamtamkt7-max/tahoiya-game",
   "working_branch": "pseudo-codex/real-case-v1",
-  "phase": "implementing",
+  "phase": "complete",
   "task": {
     "id": "real-case-v1",
     "goal": "Implement the multiplication feature defined in .pseudo-codex/SPEC.md and complete it through CI and final specification review.",
@@ -31,16 +31,27 @@
   },
   "validation": {
     "required_checks": ["test", "typecheck", "lint", "build"],
-    "last_result": "not_run",
-    "last_checked_sha": null
+    "last_result": "pass",
+    "last_checked_sha": "ef1d1bff316b9a143f716388870f25c23c820f0c"
   },
   "repair_budget": {
     "max_attempts": 3,
     "attempts_used": 0
   },
-  "last_known_good_sha": null,
-  "evidence": {},
-  "next_action": "Inspect the calculator source and tests, implement the specification, then let CI validate it.",
+  "last_known_good_sha": "ef1d1bff316b9a143f716388870f25c23c820f0c",
+  "evidence": {
+    "test_pass": true,
+    "typecheck_pass": true,
+    "lint_pass": true,
+    "build_pass": true,
+    "spec_review_pass": true,
+    "add_preserved": true,
+    "multiply_4x5": 20,
+    "multiply_negative_case": -6,
+    "forbidden_path_changes": false,
+    "ci_run_id": 32278425964
+  },
+  "next_action": "None. Task complete; retain branch as completion evidence until the pseudo-Codex framework is finalized.",
   "blockers": [],
-  "updated_at": "2026-08-20T01:59:00+09:00"
+  "updated_at": "2026-08-20T02:05:00+09:00"
 }
