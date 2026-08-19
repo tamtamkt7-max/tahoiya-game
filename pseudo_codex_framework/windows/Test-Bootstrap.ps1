@@ -5,6 +5,7 @@ $root = Join-Path ([System.IO.Path]::GetTempPath()) ("pseudo-codex-bootstrap-tes
 $remote = Join-Path $root 'remote.git'
 $work = Join-Path $root 'work'
 $secretWork = Join-Path $root 'secret-work'
+$tokenWork = Join-Path $root 'token-work'
 $scriptPath = Join-Path $PSScriptRoot 'Bootstrap-LocalRepo.ps1'
 
 function GitAt {
@@ -52,15 +53,30 @@ try {
     GitAt $secretWork switch main | Out-Null
     Set-Content -LiteralPath (Join-Path $secretWork '.env') -Value 'SECRET=do-not-push' -NoNewline
 
-    $guardBlocked = $false
+    $pathGuardBlocked = $false
     try {
         & $scriptPath -LocalPath $secretWork -Remote origin -BranchPrefix 'pseudo-codex-secret-test' -TestMode | Out-Null
     }
     catch {
-        if ($_.Exception.Message -match 'Sensitive-looking files detected') { $guardBlocked = $true }
+        if ($_.Exception.Message -match 'Sensitive-looking files detected') { $pathGuardBlocked = $true }
         else { throw }
     }
-    if (-not $guardBlocked) { throw 'sensitive file guard did not block .env' }
+    if (-not $pathGuardBlocked) { throw 'sensitive file guard did not block .env' }
+
+    & git clone $remote $tokenWork | Out-Null
+    if ($LASTEXITCODE -ne 0) { throw 'could not clone token guard fixture' }
+    GitAt $tokenWork switch main | Out-Null
+    Set-Content -LiteralPath (Join-Path $tokenWork 'config.txt') -Value 'API_KEY=sk-abcdefghijklmnopqrstuvwxyz1234567890' -NoNewline
+
+    $contentGuardBlocked = $false
+    try {
+        & $scriptPath -LocalPath $tokenWork -Remote origin -BranchPrefix 'pseudo-codex-token-test' -TestMode | Out-Null
+    }
+    catch {
+        if ($_.Exception.Message -match 'Sensitive-looking content detected') { $contentGuardBlocked = $true }
+        else { throw }
+    }
+    if (-not $contentGuardBlocked) { throw 'sensitive content guard did not block token-like content' }
 
     Write-Output 'WINDOWS_BOOTSTRAP_TEST_OK'
 }
