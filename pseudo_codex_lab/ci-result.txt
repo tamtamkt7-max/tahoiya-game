@@ -1,18 +1,10 @@
-status=fail
-tested_commit=03238ec369c7695499c0ea21df17d2146e7c99e1
-exit_code=1
+status=pass
+tested_commit=8739e8bc81c7facbe1df17234edefdb7f0d8dd7f
+exit_code=0
 --- output ---
-test_add (pseudo_codex_lab.test_calculator.CalculatorTest.test_add) ... FAIL
-
-======================================================================
-FAIL: test_add (pseudo_codex_lab.test_calculator.CalculatorTest.test_add)
-----------------------------------------------------------------------
-Traceback (most recent call last):
-  File "/home/runner/work/tahoiya-game/tahoiya-game/pseudo_codex_lab/test_calculator.py", line 8, in test_add
-    self.assertEqual(add(2, 3), 5)
-AssertionError: -1 != 5
+test_add (pseudo_codex_lab.test_calculator.CalculatorTest.test_add) ... ok
 
 ----------------------------------------------------------------------
-Ran 1 test in 0.001s
+Ran 1 test in 0.000s
 
-FAILED (failures=1)
+OK
