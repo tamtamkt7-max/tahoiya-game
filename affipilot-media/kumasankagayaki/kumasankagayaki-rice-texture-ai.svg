@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">白ごはんの食感イメージ</title>
+  <desc id="desc">炊きたての白ごはんを茶碗と箸で表したイラスト</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f4eadc"/><stop offset="1" stop-color="#d8b58b"/></linearGradient>
+    <linearGradient id="bowl" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fffdfa"/><stop offset="1" stop-color="#d8d0c6"/></linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%"><feDropShadow dx="0" dy="22" stdDeviation="22" flood-color="#5b4633" flood-opacity="0.22"/></filter>
+    <filter id="steam" x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+  <rect width="1200" height="675" rx="30" fill="url(#bg)"/>
+  <ellipse cx="515" cy="555" rx="360" ry="58" fill="#654a34" opacity="0.14"/>
+  <g filter="url(#shadow)">
+    <path d="M215 388C250 548 330 600 520 600s270-52 305-212z" fill="url(#bowl)" stroke="#c7bfb6" stroke-width="5"/>
+    <path d="M230 388c40-92 130-158 290-158s250 66 290 158c-85 78-495 78-580 0z" fill="#f7f4ef" stroke="#d5ccc2" stroke-width="4"/>
+  </g>
+  <g fill="#fff" stroke="#ece8e1" stroke-width="2">
+    <ellipse cx="360" cy="340" rx="44" ry="18" transform="rotate(-18 360 340)"/><ellipse cx="430" cy="305" rx="46" ry="19" transform="rotate(12 430 305)"/><ellipse cx="500" cy="330" rx="48" ry="20" transform="rotate(-8 500 330)"/><ellipse cx="575" cy="300" rx="45" ry="18" transform="rotate(20 575 300)"/><ellipse cx="645" cy="335" rx="47" ry="19" transform="rotate(-10 645 335)"/><ellipse cx="700" cy="365" rx="45" ry="18" transform="rotate(12 700 365)"/>
+    <ellipse cx="405" cy="380" rx="47" ry="20" transform="rotate(8 405 380)"/><ellipse cx="480" cy="385" rx="48" ry="20" transform="rotate(-14 480 385)"/><ellipse cx="555" cy="370" rx="47" ry="19" transform="rotate(6 555 370)"/><ellipse cx="625" cy="395" rx="48" ry="20" transform="rotate(-6 625 395)"/>
+    <ellipse cx="465" cy="265" rx="42" ry="17" transform="rotate(-10 465 265)"/><ellipse cx="545" cy="255" rx="43" ry="18" transform="rotate(14 545 255)"/><ellipse cx="615" cy="280" rx="42" ry="17" transform="rotate(-12 615 280)"/>
+  </g>
+  <g opacity="0.45" fill="none" stroke="#fff" stroke-width="11" stroke-linecap="round" filter="url(#steam)">
+    <path d="M410 210c-28-52 30-70 0-120"/><path d="M520 190c-25-46 25-62 2-108"/><path d="M625 210c-24-48 28-66 6-112"/>
+  </g>
+  <g transform="translate(650 150) rotate(-18)">
+    <rect x="0" y="0" width="460" height="18" rx="9" fill="#6d4a30"/><rect x="0" y="36" width="460" height="18" rx="9" fill="#5d3e29"/>
+    <g fill="#fff" stroke="#ece8e1" stroke-width="2" transform="translate(40 -34)">
+      <ellipse cx="70" cy="30" rx="49" ry="21" transform="rotate(-10 70 30)"/><ellipse cx="130" cy="35" rx="48" ry="20" transform="rotate(8 130 35)"/><ellipse cx="100" cy="68" rx="50" ry="21" transform="rotate(-4 100 68)"/>
+    </g>
+  </g>
+</svg>
